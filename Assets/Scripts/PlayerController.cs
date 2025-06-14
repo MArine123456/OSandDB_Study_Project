@@ -23,11 +23,22 @@ public class PlayerController : MonoBehaviour
 
     private List<WeaponSystem> weapons = new List<WeaponSystem>();
     private List<BuffData> appliedBuffs = new List<BuffData>();
+    private GameDataManager gameDataManager;
     public PlayerWeaponStatus weaponStatus = new PlayerWeaponStatus();
+
 
     [SerializeField]
     private GameObject weaponObj;
 
+    private void Awake()
+    {
+        gameDataManager = GameObject.Find("GameDataManager").GetComponent<GameDataManager>();
+        maxHealth = 100 * gameDataManager.maxHealthUpgradeLevel;
+        moveSpeed += (gameDataManager.moveSpeedUpgradeLevel * 0.5f);
+        attackDamage += (gameDataManager.attackDamageUpgradeLevel + 3);
+        attackSpeed += (gameDataManager.attackSpeedUpgradeLevel * 0.2f);
+        healthRegen += (gameDataManager.healthRegenUpgradeLevel * 1);
+    }
     void Start()
     {
         currentHealth = maxHealth;
@@ -83,7 +94,7 @@ public class PlayerController : MonoBehaviour
     }
     public void GainExp(int exp)
     {
-        currentExp += exp;
+        currentExp += exp * gameDataManager.increaseExpUpgradeLevel;
 
         while (currentExp >= expToNextLevel)
         {

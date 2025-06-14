@@ -45,12 +45,12 @@ public class UpgradeShopManager : MonoBehaviour
     public Text goldText;
 
     // 각 능력치의 현재 레벨 (1~10)
-    private int maxHealthLevel = 1;
-    private int attackDamageLevel = 1;
-    private int moveSpeedLevel = 1;
-    private int attackSpeedLevel = 1;
-    private int HealthRegenLevel = 1;
-    private int IncreaseExpLevel = 1;
+    private int maxHealthLevel;
+    private int attackDamageLevel;
+    private int moveSpeedLevel;
+    private int attackSpeedLevel;
+    private int HealthRegenLevel;
+    private int IncreaseExpLevel;
 
     private int maxHealthNeedUpgradeGold = 100;
     private int attackDamageNeedUpgradeGold = 100;
@@ -76,6 +76,13 @@ public class UpgradeShopManager : MonoBehaviour
 
     void Start()
     {
+        maxHealthLevel = gameData.maxHealthUpgradeLevel;
+        attackDamageLevel = gameData.attackDamageUpgradeLevel;
+        attackSpeedLevel = gameData.attackSpeedUpgradeLevel;
+        moveSpeedLevel = gameData.moveSpeedUpgradeLevel;
+        HealthRegenLevel = gameData.healthRegenUpgradeLevel;
+        IncreaseExpLevel = gameData.increaseExpUpgradeLevel;
+
         CloseUpgradeShop();
 
         SetupButtonEvents(); // 버튼 클릭 이벤트 설정
@@ -186,6 +193,7 @@ public class UpgradeShopManager : MonoBehaviour
     {
         if (upgradeShopPanel != null)
         {
+            SaveUpGrade();
             upgradeShopPanel.SetActive(false);
             Debug.Log("업그레이드 상점 닫힘");
         }
@@ -333,5 +341,16 @@ public class UpgradeShopManager : MonoBehaviour
         {
             trigger.triggers.Clear();
         }
+    }
+
+    private void SaveUpGrade()
+    {
+        gameData.maxHealthUpgradeLevel = maxHealthLevel;
+        gameData.attackDamageUpgradeLevel = attackDamageLevel;
+        gameData.attackSpeedUpgradeLevel = attackSpeedLevel;
+        gameData.moveSpeedUpgradeLevel = moveSpeedLevel;
+        gameData.healthRegenUpgradeLevel = HealthRegenLevel;
+        gameData.increaseExpUpgradeLevel = IncreaseExpLevel;
+        GameDataManager.Instance.SaveData();
     }
 }

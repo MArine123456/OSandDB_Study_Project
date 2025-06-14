@@ -260,6 +260,8 @@ public class GameLobbyManager : MonoBehaviour
     /// </summary>
     void OnExitClicked()
     {
+
+
         Debug.Log("[GameLobbyManager] 게임 종료!");
 
 #if UNITY_EDITOR

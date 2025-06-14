@@ -114,6 +114,7 @@ public class GameManager : MonoBehaviour
         isGamePaused = true;
         Time.timeScale = 0f;
         gameOverPanel.SetActive(true);
+        gameData.gold += player.gold;
 
         // 게임오버 패널의 GameOverUI 컴포넌트에 데이터 전달
         GameOverUI gameOverUI = gameOverPanel.GetComponent<GameOverUI>();

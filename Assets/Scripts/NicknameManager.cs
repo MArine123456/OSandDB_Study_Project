@@ -235,6 +235,8 @@ public class NicknameManager : MonoBehaviour
     //개발용(닉네임 초기화)
     public void ResetNickname()
     {
+        GameDataManager.Instance.ResetData();
+
         Debug.Log("[NicknameManager] 닉네임을 초기화합니다.");
 
         // 닉네임 데이터 초기화

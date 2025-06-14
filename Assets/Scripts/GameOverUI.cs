@@ -56,6 +56,10 @@ public class GameOverUI : MonoBehaviour
 
     void OnMainLobbyButtonClicked()
     {
+        if(GameDataManager.Instance.score < GameManager.Instance.score)
+        {
+            GameDataManager.Instance.score = GameManager.Instance.score;
+        }
         SceneManager.LoadScene(LobbySceneName);
     }
 }

@@ -6902,18 +6902,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gold: 0
-  playerMaxHealth: 0
-  playerAttackDamage: 0
-  playerMoveSpeed: 0
-  playerAttackSpeed: 0
-  playerHealthRegen: 0
-  playerIncreaseEXP: 0
-  maxHealthUpgradeLevel: 0
-  attackDamageUpgradeLevel: 0
-  moveSpeedUpgradeLevel: 0
-  attackSpeedUpgradeLevel: 0
-  healthRegenUpgradeLevel: 0
-  increaseExpLevel: 0
+  score: 0
+  maxHealthUpgradeLevel: 1
+  attackDamageUpgradeLevel: 1
+  moveSpeedUpgradeLevel: 1
+  attackSpeedUpgradeLevel: 1
+  healthRegenUpgradeLevel: 1
+  increaseExpUpgradeLevel: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
