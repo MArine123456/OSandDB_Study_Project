@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
         GameOverUI gameOverUI = gameOverPanel.GetComponent<GameOverUI>();
         if (gameOverUI != null)
         {
-            gameOverUI.SetGameOverData(score, killCount, gold, gameTime);
+            gameOverUI.SetGameOverData(gameData.score, score, killCount, gold, gameTime);
         }
     }
 

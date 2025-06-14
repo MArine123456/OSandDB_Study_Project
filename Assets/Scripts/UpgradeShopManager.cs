@@ -83,7 +83,7 @@ public class UpgradeShopManager : MonoBehaviour
         HealthRegenLevel = gameData.healthRegenUpgradeLevel;
         IncreaseExpLevel = gameData.increaseExpUpgradeLevel;
 
-        CloseUpgradeShop();
+        //CloseUpgradeShop();
 
         SetupButtonEvents(); // 버튼 클릭 이벤트 설정
         StoreOriginalColors(); // 버튼 원래 색상 저장

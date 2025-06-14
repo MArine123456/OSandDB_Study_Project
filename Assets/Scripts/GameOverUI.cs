@@ -7,6 +7,7 @@ public class GameOverUI : MonoBehaviour
 {
     [Header("UI 컴포넌트")]
     public TextMeshProUGUI gameOverTitle;
+    public Text highScoreText;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI killText;
     public TextMeshProUGUI goldText;
@@ -25,8 +26,9 @@ public class GameOverUI : MonoBehaviour
         }
     }
 
-    public void SetGameOverData(int score, int killCount, int gold, float playTime)
+    public void SetGameOverData(int highScore, int score, int killCount, int gold, float playTime)
     {
+        highScoreText.text = highScore.ToString();
         // 스코어 설정
         if (scoreText != null)
         {

@@ -27,7 +27,7 @@ public class GameDataManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject); // 씬 전환 시 유지
 
-            saveFilePath = Path.Combine(Application.persistentDataPath, "save.json");
+            saveFilePath = Path.Combine(Application.dataPath, "SaveData/save.json");
             LoadData();
         }
         else
