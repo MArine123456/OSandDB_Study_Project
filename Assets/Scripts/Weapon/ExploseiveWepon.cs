@@ -20,7 +20,7 @@ public class ExplosiveWeapon : WeaponSystem
         Color[] pixels = new Color[20 * 20];
         for (int i = 0; i < pixels.Length; i++)
         {
-            pixels[i] = Color.red;
+            pixels[i] = Color.blue;
         }
         texture.SetPixels(pixels);
         texture.Apply();

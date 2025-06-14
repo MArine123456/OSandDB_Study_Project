@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour
     }
     public void GainExp(int exp)
     {
-        currentExp += exp * gameDataManager.increaseExpUpgradeLevel;
+        currentExp += (exp * 2) * gameDataManager.increaseExpUpgradeLevel;
 
         while (currentExp >= expToNextLevel)
         {
