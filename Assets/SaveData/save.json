@@ -1,0 +1,10 @@
+{
+    "highScore": 561,
+    "gold": 50,
+    "maxHealthUpgradeLevel": 1,
+    "attackDamageUpgradeLevel": 3,
+    "moveSpeedUpgradeLevel": 1,
+    "attackSpeedUpgradeLevel": 1,
+    "healthRegenUpgradeLevel": 1,
+    "increaseExpUpgradeLevel": 1
+}
