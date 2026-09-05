@@ -139,8 +139,7 @@ public class PlayerController : MonoBehaviour
             case BuffType.NewWeapon:
                 AddWeapon(buff.weaponType);
                 break;
-            case BuffType.ProjectileUpgrade:
-                ProjectileWeapon projectileWeapon = GetComponentInChildren<ProjectileWeapon>();
+            case BuffType.ProjectileUpgrade:ProjectileWeapon projectileWeapon = GetComponentInChildren<ProjectileWeapon>();
                 if (buff.upgradeProperty == UpgradeProperty.Count)
                 {
                     projectileWeapon.projectileCount++;
