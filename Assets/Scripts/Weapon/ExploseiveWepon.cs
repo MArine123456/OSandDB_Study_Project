@@ -4,6 +4,9 @@ public class ExplosiveWeapon : WeaponSystem
 {
     public float explosiveRange = 3f;
 
+    // 폭발 스프라이트 캐싱
+    private static Sprite cachedExplosiveSprite;
+
     protected override void Attack()
     {
         // 랜덤 방향으로 폭탄 투척
@@ -13,18 +16,20 @@ public class ExplosiveWeapon : WeaponSystem
 
         GameObject explosive = new GameObject("Explosive");
         explosive.transform.position = throwPosition;
-
-        // 스프라이트 추가
         SpriteRenderer sr = explosive.AddComponent<SpriteRenderer>();
-        Texture2D texture = new Texture2D(20, 20);
-        Color[] pixels = new Color[20 * 20];
-        for (int i = 0; i < pixels.Length; i++)
+
+
+        if (cachedExplosiveSprite == null)
         {
-            pixels[i] = Color.blue;
+            Texture2D texture = new Texture2D(20, 20);
+            Color[] pixels = new Color[20 * 20];
+            for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.blue;
+            texture.SetPixels(pixels);
+            texture.Apply();
+            cachedExplosiveSprite = Sprite.Create(texture, new Rect(0, 0, 20, 20), new Vector2(0.5f, 0.5f));
         }
-        texture.SetPixels(pixels);
-        texture.Apply();
-        sr.sprite = Sprite.Create(texture, new Rect(0, 0, 20, 20), new Vector2(0.5f, 0.5f));
+
+        sr.sprite = cachedExplosiveSprite;
 
         // 폭발 스크립트 추가
         Explosive exp = explosive.AddComponent<Explosive>();

@@ -6,6 +6,9 @@ public class TriangleEnemy : Enemy
     public float shootCooldown = 2f;
     private float lastShootTime;
 
+    // ÃÑ¾Ë ½ºÇÁ¶óÀÌÆ® Ä³½Ì
+    private static Sprite cachedProjectileSprite;
+
     protected override void Start()
     {
         enemyType = EnemyType.Triangle;
@@ -37,17 +40,19 @@ public class TriangleEnemy : Enemy
     {
         GameObject projectile = new GameObject("EnemyProjectile");
         projectile.transform.position = transform.position;
-
         SpriteRenderer sr = projectile.AddComponent<SpriteRenderer>();
-        Texture2D texture = new Texture2D(8, 8);
-        Color[] pixels = new Color[8 * 8];
-        for (int i = 0; i < pixels.Length; i++)
+
+        if (cachedProjectileSprite == null)
         {
-            pixels[i] = Color.yellow;
+            Texture2D texture = new Texture2D(8, 8);
+            Color[] pixels = new Color[8 * 8];
+            for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.yellow;
+            texture.SetPixels(pixels);
+            texture.Apply();
+            cachedProjectileSprite = Sprite.Create(texture, new Rect(0, 0, 8, 8), new Vector2(0.5f, 0.5f));
         }
-        texture.SetPixels(pixels);
-        texture.Apply();
-        sr.sprite = Sprite.Create(texture, new Rect(0, 0, 8, 8), new Vector2(0.5f, 0.5f));
+
+        sr.sprite = cachedProjectileSprite;
 
         CircleCollider2D collider = projectile.AddComponent<CircleCollider2D>();
         collider.isTrigger = true;

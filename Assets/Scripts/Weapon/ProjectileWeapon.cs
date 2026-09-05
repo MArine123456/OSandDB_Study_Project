@@ -5,15 +5,13 @@ public class ProjectileWeapon : WeaponSystem
     public int projectileCount = 1;
     public float projectileSpeed = 10f;
 
+    // 캐싱된 스프라이트를 저장하기 위한 정적 변수
+    private static Sprite cachedSprite;
+
     protected override void Attack()
     {
-        for (int i = 0; i < projectileCount; i++)
+        if (cachedSprite == null)
         {
-            GameObject projectile = new GameObject("Projectile");
-            projectile.transform.position = player.transform.position;
-
-            // 스프라이트 추가
-            SpriteRenderer sr = projectile.AddComponent<SpriteRenderer>();
             Texture2D texture = new Texture2D(12, 12);
             Color[] pixels = new Color[12 * 12];
             for (int j = 0; j < pixels.Length; j++)
@@ -22,7 +20,16 @@ public class ProjectileWeapon : WeaponSystem
             }
             texture.SetPixels(pixels);
             texture.Apply();
-            sr.sprite = Sprite.Create(texture, new Rect(0, 0, 12, 12), new Vector2(0.5f, 0.5f));
+            cachedSprite = Sprite.Create(texture, new Rect(0, 0, 12, 12), new Vector2(0.5f, 0.5f));
+        }
+        for (int i = 0; i < projectileCount; i++)
+        {
+            // 스프라이트 추가
+            GameObject projectile = new GameObject("Projectile");
+            projectile.transform.position = player.transform.position;
+            SpriteRenderer sr = projectile.AddComponent<SpriteRenderer>();
+
+            sr.sprite = cachedSprite;
 
             // 콜라이더 추가
             CircleCollider2D collider = projectile.AddComponent<CircleCollider2D>();

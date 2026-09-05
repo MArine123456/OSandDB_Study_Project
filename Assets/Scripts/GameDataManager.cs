@@ -5,6 +5,8 @@ using System.Data;
 
 public class GameDataManager : MonoBehaviour
 {
+    private bool isDirty = false;
+
     public static GameDataManager Instance;
 
     [Header("게임 데이터 상태")]
@@ -12,12 +14,29 @@ public class GameDataManager : MonoBehaviour
     public int score = 0;
 
     [Header("업그레이드 현황")]
-    public int maxHealthUpgradeLevel;
+    //public int maxHealthUpgradeLevel;
     public int attackDamageUpgradeLevel;
     public int moveSpeedUpgradeLevel;
     public int attackSpeedUpgradeLevel;
     public int healthRegenUpgradeLevel;
-    public int increaseExpUpgradeLevel;
+    //public int increaseExpUpgradeLevel;
+
+    //방어코드 추가
+    [Header("업그레이드 현황 (프로퍼티 캡슐화)")]
+    [SerializeField] private int _maxHealthUpgradeLevel = 1;
+    [SerializeField] private int _increaseExpUpgradeLevel = 1;
+
+    public int maxHealthUpgradeLevel
+    {
+        get { return Mathf.Max(1, _maxHealthUpgradeLevel); } // 꺼낼 땐 최소 1
+        set { _maxHealthUpgradeLevel = Mathf.Clamp(value, 1, 10); } // 넣을 땐 1~10 사이로 고정
+    }
+
+    public int increaseExpUpgradeLevel
+    {
+        get { return Mathf.Max(1, _increaseExpUpgradeLevel); }
+        set { _increaseExpUpgradeLevel = Mathf.Clamp(value, 1, 10); }
+    }
 
     private string dbPath;
 
@@ -90,38 +109,51 @@ public class GameDataManager : MonoBehaviour
 
             using (var command = connection.CreateCommand())
             {
-                // 기존 데이터가 있는지 확인
-                command.CommandText = "SELECT COUNT(*) FROM GameData WHERE id = 1";
-                int count = System.Convert.ToInt32(command.ExecuteScalar());
+                //// 기존 데이터가 있는지 확인
+                //command.CommandText = "SELECT COUNT(*) FROM GameData WHERE id = 1";
+                //int count = System.Convert.ToInt32(command.ExecuteScalar());
 
-                if (count > 0)
-                {
-                    // 업데이트
-                    command.CommandText = @"
-                        UPDATE GameData SET 
-                            highScore = @highScore,
-                            gold = @gold,
-                            maxHealthUpgradeLevel = @maxHealthUpgradeLevel,
-                            attackDamageUpgradeLevel = @attackDamageUpgradeLevel,
-                            moveSpeedUpgradeLevel = @moveSpeedUpgradeLevel,
-                            attackSpeedUpgradeLevel = @attackSpeedUpgradeLevel,
-                            healthRegenUpgradeLevel = @healthRegenUpgradeLevel,
-                            increaseExpUpgradeLevel = @increaseExpUpgradeLevel
-                        WHERE id = 1";
-                }
-                else
-                {
-                    // 새로 삽입
-                    command.CommandText = @"
-                        INSERT INTO GameData (id, highScore, gold, maxHealthUpgradeLevel, 
-                                            attackDamageUpgradeLevel, moveSpeedUpgradeLevel, 
-                                            attackSpeedUpgradeLevel, healthRegenUpgradeLevel, 
-                                            increaseExpUpgradeLevel) 
-                        VALUES (1, @highScore, @gold, @maxHealthUpgradeLevel, 
-                               @attackDamageUpgradeLevel, @moveSpeedUpgradeLevel, 
-                               @attackSpeedUpgradeLevel, @healthRegenUpgradeLevel, 
-                               @increaseExpUpgradeLevel)";
-                }
+                //if (count > 0)
+                //{
+                //    // 업데이트
+                //    command.CommandText = @"
+                //        UPDATE GameData SET 
+                //            highScore = @highScore,
+                //            gold = @gold,
+                //            maxHealthUpgradeLevel = @maxHealthUpgradeLevel,
+                //            attackDamageUpgradeLevel = @attackDamageUpgradeLevel,
+                //            moveSpeedUpgradeLevel = @moveSpeedUpgradeLevel,
+                //            attackSpeedUpgradeLevel = @attackSpeedUpgradeLevel,
+                //            healthRegenUpgradeLevel = @healthRegenUpgradeLevel,
+                //            increaseExpUpgradeLevel = @increaseExpUpgradeLevel
+                //        WHERE id = 1";
+                //}
+                //else
+                //{
+                //    // 새로 삽입
+                //    command.CommandText = @"
+                //        INSERT INTO GameData (id, highScore, gold, maxHealthUpgradeLevel, 
+                //                            attackDamageUpgradeLevel, moveSpeedUpgradeLevel, 
+                //                            attackSpeedUpgradeLevel, healthRegenUpgradeLevel, 
+                //                            increaseExpUpgradeLevel) 
+                //        VALUES (1, @highScore, @gold, @maxHealthUpgradeLevel, 
+                //               @attackDamageUpgradeLevel, @moveSpeedUpgradeLevel, 
+                //               @attackSpeedUpgradeLevel, @healthRegenUpgradeLevel, 
+                //               @increaseExpUpgradeLevel)";
+                //}
+
+                command.CommandText = @"
+                    INSERT OR REPLACE INTO GameData (
+                        id, highScore, gold, maxHealthUpgradeLevel, 
+                        attackDamageUpgradeLevel, moveSpeedUpgradeLevel, 
+                        attackSpeedUpgradeLevel, healthRegenUpgradeLevel, 
+                        increaseExpUpgradeLevel
+                    ) VALUES (
+                        1, @highScore, @gold, @maxHealthUpgradeLevel, 
+                        @attackDamageUpgradeLevel, @moveSpeedUpgradeLevel, 
+                        @attackSpeedUpgradeLevel, @healthRegenUpgradeLevel, 
+                        @increaseExpUpgradeLevel
+                    )";
 
                 // 파라미터 설정
                 command.Parameters.AddWithValue("@highScore", score);
@@ -138,7 +170,7 @@ public class GameDataManager : MonoBehaviour
 
             connection.Close();
         }
-
+        isDirty = false;
         Debug.Log("SQLite에 게임 데이터 저장 완료");
     }
 
@@ -196,25 +228,38 @@ public class GameDataManager : MonoBehaviour
         Debug.Log("SQLite 저장 데이터 삭제 완료");
     }
 
+    public void SetDirty()
+    {
+        isDirty = true;
+    }
+
     // 애플리케이션 종료 시 자동 저장
     void OnApplicationPause(bool pauseStatus)
     {
-        if (pauseStatus)
+        if (pauseStatus && isDirty)
         {
             SaveData();
+            isDirty = false;
         }
     }
 
+
     void OnApplicationFocus(bool hasFocus)
     {
-        if (!hasFocus)
+        if (!hasFocus && isDirty)
         {
             SaveData();
+            isDirty = false;
         }
     }
 
     void OnDestroy()
     {
-        SaveData();
+        if (isDirty)
+        {
+            SaveData();
+            isDirty = false;
+        }
     }
+
 }

@@ -351,6 +351,7 @@ public class UpgradeShopManager : MonoBehaviour
         gameData.moveSpeedUpgradeLevel = moveSpeedLevel;
         gameData.healthRegenUpgradeLevel = HealthRegenLevel;
         gameData.increaseExpUpgradeLevel = IncreaseExpLevel;
-        GameDataManager.Instance.SaveData();
+        //GameDataManager.Instance.SaveData(); // 데이터 저장 함수 직접 호출 대신 플래그 활성화
+        GameDataManager.Instance.SetDirty();
     }
 }

@@ -28,6 +28,9 @@ public class Enemy : MonoBehaviour
     protected float hitFlashTime = 0.1f;
     protected float hitTimer = 0f;
 
+    // 캐싱된 기본 스프라이트를 저장하기 위한 정적 변수
+    private static Sprite cachedBaseSprite;
+
     protected virtual void Start()
     {
         currentHealth = maxHealth;
@@ -106,31 +109,26 @@ public class Enemy : MonoBehaviour
 
     protected virtual void CreateSprite()
     {
-        // 기본 스프라이트 생성 (원형)
-        Texture2D texture = new Texture2D(32, 32);
-        Color[] pixels = new Color[32 * 32];
-
-        for (int i = 0; i < pixels.Length; i++)
+        // 캐싱된 스프라이트가 없으면 새로 생성
+        if (cachedBaseSprite == null)
         {
-            int x = i % 32;
-            int y = i / 32;
-            float distance = Vector2.Distance(new Vector2(x, y), new Vector2(16, 16));
+            Texture2D texture = new Texture2D(32, 32);
+            Color[] pixels = new Color[32 * 32];
 
-            if (distance <= 15)
+            for (int i = 0; i < pixels.Length; i++)
             {
-                pixels[i] = GetDefaultColor();
+                int x = i % 32;
+                int y = i / 32;
+                float distance = Vector2.Distance(new Vector2(x, y), new Vector2(16, 16));
+                pixels[i] = distance <= 15 ? GetDefaultColor() : Color.clear;
             }
-            else
-            {
-                pixels[i] = Color.clear;
-            }
+
+            texture.SetPixels(pixels);
+            texture.Apply();
+            cachedBaseSprite = Sprite.Create(texture, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f));
         }
 
-        texture.SetPixels(pixels);
-        texture.Apply();
-
-        Sprite sprite = Sprite.Create(texture, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f));
-        spriteRenderer.sprite = sprite;
+        spriteRenderer.sprite = cachedBaseSprite;
     }
 
     private void DropGold()

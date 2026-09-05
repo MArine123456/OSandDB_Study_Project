@@ -32,7 +32,9 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        gameDataManager = GameObject.Find("GameDataManager").GetComponent<GameDataManager>();
+        //gameDataManager = GameObject.Find("GameDataManager").GetComponent<GameDataManager>();
+        gameDataManager = GameDataManager.Instance; // 싱글톤 인스턴스 사용
+
         maxHealth = 100 * gameDataManager.maxHealthUpgradeLevel;
         moveSpeed += (gameDataManager.moveSpeedUpgradeLevel * 0.5f);
         attackDamage += (gameDataManager.attackDamageUpgradeLevel + 3);
@@ -139,11 +141,11 @@ public class PlayerController : MonoBehaviour
                 break;
             case BuffType.ProjectileUpgrade:
                 ProjectileWeapon projectileWeapon = GetComponentInChildren<ProjectileWeapon>();
-                if (buff.name.Contains("개수"))
+                if (buff.upgradeProperty == UpgradeProperty.Count)
                 {
                     projectileWeapon.projectileCount++;
                 }
-                else if (buff.name.Contains("속도"))
+                else if (buff.upgradeProperty == UpgradeProperty.Speed)
                 {
                     projectileWeapon.projectileSpeed += 1f;
                 }

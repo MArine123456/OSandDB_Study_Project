@@ -15,6 +15,14 @@ public enum BuffType
     ExplosiveUpgrade
 }
 
+public enum UpgradeProperty
+{
+    None,
+    Count, 
+    Speed, 
+    Range 
+}
+
 
 [System.Serializable]
 public class BuffData
@@ -24,6 +32,7 @@ public class BuffData
     public BuffType type;
     public float value;
     public WeaponType weaponType;
+    public UpgradeProperty upgradeProperty;
 
     public BuffData(string n, string desc, BuffType t, float v)
     {
@@ -40,6 +49,12 @@ public class BuffData
         type = t;
         value = v;
         weaponType = wType;
+    }
+
+    public BuffData(string n, string desc, BuffType t, float v, UpgradeProperty prop)
+    {
+        name = n; description = desc; type = t; value = v;
+        upgradeProperty = prop;
     }
 }
 
@@ -74,10 +89,10 @@ public static class BuffDatabase
         new BuffData("폭발 무기", "새로운 무기 획득", BuffType.NewWeapon, 0f, WeaponType.Explosive),
         
         // 무기 업그레이드 버프들
-        new BuffData("발사체 개수 증가", "발사체 개수 +1", BuffType.ProjectileUpgrade, 1f),
-        new BuffData("발사체 속도 증가", "발사체 속도 +2", BuffType.ProjectileUpgrade, 2f),
-        new BuffData("근접 범위 증가", "근접 공격 범위 +0.5", BuffType.MeleeUpgrade, 0.5f),
-        new BuffData("폭발 범위 증가", "폭발 범위 +1", BuffType.ExplosiveUpgrade, 1f),
+        new BuffData("발사체 개수 증가", "발사체 개수 +1", BuffType.ProjectileUpgrade, 1f, UpgradeProperty.Count),
+        new BuffData("발사체 속도 증가", "발사체 속도 +2", BuffType.ProjectileUpgrade, 2f, UpgradeProperty.Speed),
+        new BuffData("근접 범위 증가", "근접 공격 범위 +0.5", BuffType.MeleeUpgrade, 0.5f, UpgradeProperty.Range),
+        new BuffData("폭발 범위 증가", "폭발 범위 +1", BuffType.ExplosiveUpgrade, 1f, UpgradeProperty.Range),
     };
 
     public static List<BuffData> GetRandomBuffs(int count, PlayerWeaponStatus weaponStatus)

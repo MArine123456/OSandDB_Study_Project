@@ -5,6 +5,9 @@ public class MeleeWeapon : WeaponSystem
     public float meleeRange = 2f;
     private GameObject meleeArea;
 
+    // 근접 공격 범위 시각화를 위한 스프라이트 캐싱
+    private static Sprite cachedMeleeSprite;
+
     public override void Initialize(PlayerController playerRef)
     {
         base.Initialize(playerRef);
@@ -21,29 +24,34 @@ public class MeleeWeapon : WeaponSystem
         sr.color = Color.white;
         sr.sortingOrder = 10; // 다른 오브젝트 위에 표시되도록
 
-        Texture2D texture = new Texture2D(64, 64);
-        Color[] pixels = new Color[64 * 64];
-        float textureRadius = 32f; // 텍스처의 반지름 (64x64 텍스처의 중심에서 가장자리까지)
-
-        for (int i = 0; i < pixels.Length; i++)
+        if (cachedMeleeSprite == null)
         {
-            int x = i % 64;
-            int y = i / 64;
-            float distance = Vector2.Distance(new Vector2(x, y), new Vector2(32, 32));
-            if (distance <= textureRadius)
+            Texture2D texture = new Texture2D(64, 64);
+            Color[] pixels = new Color[64 * 64];
+            float textureRadius = 32f;
+
+            for (int i = 0; i < pixels.Length; i++)
             {
-                // 중심에서 가장자리로 갈수록 투명도 감소
-                float alpha = 1f - (distance / textureRadius);
-                pixels[i] = new Color(1, 0.3f, 0.3f, alpha * 0.6f); // 빨간색 계열
+                int x = i % 64;
+                int y = i / 64;
+                float distance = Vector2.Distance(new Vector2(x, y), new Vector2(32, 32));
+
+                if (distance <= textureRadius)
+                {
+                    float alpha = 1f - (distance / textureRadius);
+                    pixels[i] = new Color(1, 0.3f, 0.3f, alpha * 0.6f);
+                }
+                else
+                {
+                    pixels[i] = Color.clear;
+                }
             }
-            else
-            {
-                pixels[i] = Color.clear;
-            }
+            texture.SetPixels(pixels);
+            texture.Apply();
+            cachedMeleeSprite = Sprite.Create(texture, new Rect(0, 0, 64, 64), new Vector2(0.5f, 0.5f));
         }
-        texture.SetPixels(pixels);
-        texture.Apply();
-        sr.sprite = Sprite.Create(texture, new Rect(0, 0, 64, 64), new Vector2(0.5f, 0.5f));
+
+        sr.sprite = cachedMeleeSprite;
 
         // 스프라이트 크기를 실제 공격 범위에 맞게 조정
         float spriteScale = (meleeRange * 2f) / (64f / 100f); // 64픽셀을 Unity 단위로 변환하여 스케일 계산
